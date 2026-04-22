@@ -569,34 +569,40 @@ version: 2.2.0
 **CSS 关键属性**：
 
 ```css
-/* 单屏容器 */
-.single-screen {
+/* 单屏容器 - 必须使用 flex column 固定高度 */
+body {
   height: 100vh;
   overflow: hidden;
-  font-size: 11px; /* 压缩基础字号 */
+  display: flex;
+  flex-direction: column;
 }
 
-/* 禁止滚动 */
-.single-screen * {
-  overflow: hidden;
+/* 内容区域 - 自动填充剩余高度 */
+.content {
+  flex: 1;
+  display: flex;
+  min-height: 0; /* 关键：允许 flex 子项收缩 */
 }
 
-/* 压缩后的卡片网格 */
-.single-screen .grid-4 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  height: 55vh;
-}
+/* 五列布局 - 基于内容密度比例分配 */
+.col-1 { width: 24%; } /* 纵向分析 - 最宽 */
+.col-2 { width: 19%; } /* 横向分析 */
+.col-3 { width: 19%; } /* 交汇洞察 */
+.col-4 { width: 19%; } /* 关键发现 */
+.col-5 { width: 19%; } /* 未来推演 */
 
-/* 压缩后的底部区域 */
-.single-screen .bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  height: 30vh;
+/* 列内部滚动 */
+.col-inner {
+  flex: 1;
+  overflow-y: auto;
 }
 ```
+
+**关键修复**：
+1. `min-height: 0` — 防止 flex 子项无法收缩（flexbox 默认 min-height: auto 导致无法收缩）
+2. 每列独立滚动 — `overflow-y: auto` 而非全局滚动
+3. 五列宽度比例 24:19:19:19:19 — 基于实际内容密度分配
+4. 列内使用 `flex flex-col overflow-hidden` 包装
 
 ---
 
